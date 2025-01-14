@@ -43,6 +43,9 @@
 %\setlength\PreviewBorder{2mm}
 
 \usepackage{pgfplots}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{patterns}
 \pgfplotsset{compat=1.10}
 \usepgfplotslibrary{fillbetween}
 %% The amsthm package provides extended theorem environments
@@ -204,10 +207,10 @@ where $E$ is subject to the constraint $E^2=m^2+p^2$, the Boltzmann equation rea
 Defining $Y=n/s$ and $x=m/T$, where 
 
 \begin{equation}
-s=\dfrac{2\pi²}{45}g_\star(T)T^3 \label{eq:ent_dens}
+s=\dfrac{2\pi²}{45}g_{\star s}(T)T^3 \label{eq:ent_dens}
 \end{equation}
 
-is the entropy density \cite{baumann2022cosmology} satisfying entropy conservation $sa^3=constant$, hence, ignoring the temperature dependence of the relativistic degrees of freedom, $g_\star$, $\dot{s}=-3Hs$. Differentiating $Y$ with respect to time
+is the entropy density \cite{baumann2022cosmology} satisfying entropy conservation $sa^3=constant$, hence, ignoring the temperature dependence of $g_{\star s}$, $\dot{s}=-3Hs$. Differentiating $Y$ with respect to time
 
 \begin{equation}
 \dot{Y}=\dfrac{\dot{n}}{s}-\dfrac{n\dot{s}}{s^2}=\dfrac{\dot{n}+3Hn}{s}. \label{eq:Ydot}
@@ -241,6 +244,28 @@ We shall focus our attention in some particle-like dark matter (DM) candidates, 
 
 \subsection{Annihilation}
 
+
+\begin{figure}[h]
+\begin{center}
+\begin{tikzpicture}
+    \newcommand{\R}{1.2}
+    \path (240:\R) coordinate (A);
+    \path ( 60:\R) coordinate (B);
+    \path ( 0:\R) coordinate (C);
+    %\draw[help lines,line width=0.1pt,blue] (-3, -2) grid (3, 2);
+	\draw[thick,black] (-3,-2)--(0,0) node[midway,below=3pt]{DM};
+	\draw[thick,black] (-3,2)--(0,0) node[midway,above=3pt]{DM};
+	\draw[thick,blue] (3,2)--(0,0) node[midway,above=3pt]{SM};
+	\draw[thick,blue] (3,-2)--(0,0) node[midway,below=3pt]{SM};
+	\draw[red,fill=white] (0,0) circle (\R);
+	\draw[red,fill=white,pattern=north west lines, pattern color=red] (0,0) circle (\R);
+	\draw[thick,black,->] (-1,-2)--(1,-2);
+	\draw[thick,black,<-] (-1,-2.25)--(1,-2.25);
+\end{tikzpicture}
+\end{center}
+\caption{$2\to2$ WIMP annihilation.}
+\end{figure}\label{fig:wimp_an}
+
 We will first consider the WIMP annihilation into SM particles $DM+DM\rightleftharpoons SM+SM$ happenning during the radiation domination epoch, described by the Friedmann equation
 
 \begin{equation}
@@ -256,7 +281,7 @@ where $M_P\approx 2.4\times10^{18}\text{ GeV}$ is the reduced Planck mass \cite{
 The collision term for this process is given by \cite{baumann2022cosmology}
 
 \begin{align}
-\int\mathcal{C}\{f\}\mathrm{d}\tilde{p}=&-\int\mathrm{d}\tilde{p}_1\mathrm{d}\tilde{p}_2\mathrm{d}\tilde{p}_3\mathrm{d}\tilde{p}_4(2\pi)^4\delta^4(p_1+p_2-p_3-p_4)\nonumber\\&|M|^2(f_1f_2-f_3^{eq}f_4^{eq}), \label{eq:col_22}
+\int\mathcal{C}\{f\}\mathrm{d}\tilde{p}=&-\int\mathrm{d}\tilde{p}_1\mathrm{d}\tilde{p}_2\mathrm{d}\tilde{p}_3\mathrm{d}\tilde{p}_4(2\pi)^4\delta^4(p_1+p_2-p_3-p_4)\times\nonumber\\&\times|M|^2(f_1f_2-f_3^{eq}f_4^{eq}), \label{eq:col_22}
 \end{align}
 
 where 1 and 2 represent the DM particles on the left side of the reaction and 3 and 4 represent the SM particles on the right side of the reaction, which are in thermal equilibrium, thus, the superindex ``q'' on $f_3^{eq}f_4^{eq}$. The Dirac delta accounts for the conservation of the 4-momentum in the process, particularly, the conservation of energy. We assume that the equilibrium distributions are Maxwell-Boltzmann distributions without chemical potential \cite{kolb1991early}: $f_i^{eq}\sim \exp(-E_i/T)$ and the non-equilibrium distributions are approximately proportional to the equilibrium distributions $f_i\approx\left(\frac{n_i}{n_i^{eq}}f_i^{eq}\right)$ \citep{pierre2019dark}. The SM particles distributions is then
@@ -268,28 +293,40 @@ f_3^{eq}f_4^{eq}=\exp\left(-\dfrac{E_3+E_4}{T}\right)=\exp\left(-\dfrac{E_1+E_2}
 Replacing in the equation \ref{eq:col_22}, we get the expression
 
 \begin{align}
-\int\mathcal{C}\{f\}\mathrm{d}\tilde{p}&=-(n_1n_2-n_1^{eq}n_2^{eq})\dfrac{1}{n_1^{eq}n_2^{eq}}\int\mathrm{d}\tilde{p}_1\mathrm{d}\tilde{p}_2\mathrm{d}\tilde{p}_4\mathrm{d}\tilde{p}_3(2\pi)^4\times\nonumber\\&\times\delta^4(p_1+p_2-p_3-p_4)|M|^2f_1^{eq}f_2^{eq}=-\langle\sigma v\rangle(n^2-n_{eq}^2),
+\int\mathcal{C}\{f\}\mathrm{d}\tilde{p}&=-(n_1n_2-n_1^{eq}n_2^{eq})\dfrac{1}{n_1^{eq}n_2^{eq}}\int\mathrm{d}\tilde{p}_1\mathrm{d}\tilde{p}_2\mathrm{d}\tilde{p}_4\mathrm{d}\tilde{p}_3(2\pi)^4\times\nonumber\\&\times\delta^4(p_1+p_2-p_3-p_4)|M|^2f_1^{eq}f_2^{eq}\nonumber\\&=-\langle\sigma v\rangle(n^2-n_{eq}^2), \label{eq:col_22_n}
 \end{align}
 
-where the thermally-averaged cross section, $\langle\sigma v\rangle$, is defined as the integral in the previous equation and we have used the fact that there is no asymmetry between the DM species involved in the reaction, hence $n_1=n_2=n$. $n_eq$ is easily found considering that the equilibrium distributions are Maxwell-Boltzmann distributions:
+where the thermally-averaged cross section, $\langle\sigma v\rangle$, is defined as the integral in equation \ref{eq:col_22_n} and we have used the fact that there is no asymmetry between the DM species involved in the reaction, hence $n_1=n_2=n$. $n_{eq}$ is easily found considering that the equilibrium distributions are Maxwell-Boltzmann distributions \cite{baumann2022cosmology}:
 
-$$
-n_{eq} = \dfrac{g}{2\pi^2}m^2TK_2\left(\dfrac{m}{T}\right)
-$$
+\begin{equation}
+n_{eq} = \dfrac{g}{2\pi^2}m^2TK_2\left(\dfrac{m}{T}\right). \label{eq:neq}
+\end{equation}
 
  Using the definition of $Y$, the Boltzmann equation becomes 
 
-$$
-\dfrac{\mathrm{d}Y}{\mathrm{d}x}=-\dfrac{\langle\sigma v\rangle s}{Hx}(Y^2-Y_{eq}^2)
-$$
+\begin{equation}
+\dfrac{\mathrm{d}Y}{\mathrm{d}x}=-\dfrac{\langle\sigma v\rangle s}{Hx}(Y^2-Y_{eq}^2). \label{eq:Boltz_wimp}
+\end{equation}
 
 and the relic abundance $\Omega_0=mY_0s_0/3H_0^2M_P^2$ is given by:
 
-$$
-\Omega_{0}h^2=\dfrac{Y_0ms_0}{3M_P^2(2.13\times 10^{-42}\text{ GeV})^2},
-$$
+\begin{equation}
+\Omega_{0}h^2=\dfrac{Y_0ms_0}{3M_P^2(2.13\times 10^{-42}\text{ GeV})^2}, \label{eq:omegah2}
+\end{equation}
 
-where the subscript 0 represents the current value of the quantity in question.
+where the subscript 0 represents the current value of the quantity in question \cite{mambrini2021particles}. An approximate analytic solution for the relic abundance can be obtained from \ref{eq:Boltz_wimp} by making some considerations on $Y$ and $Y_{eq}$. We shall assume that the freeze-out occurs when the DM particles are non-relativistic ($x_f\gtrsim3$), producing cold relics \cite{kolb1991early}. For temperatures higher than a few MeV, the approximation $g_{\star s}=g_\star$ works well, and so, the factor $\frac{\langle\sigma v\rangle s}{Hx}$ can be rewritten in terms of $x$ and constants
+
+\begin{equation}
+\dfrac{\langle\sigma v\rangle s}{Hx}=\dfrac{2}{15}\langle\sigma v\rangle\sqrt{10g_\star}M_Pmx^{-2}=\lambda x^{-2}, \label{eq:factor}
+\end{equation}
+
+and, for $x\gg3$
+
+\begin{equation}
+Y_{eq}\approx\dfrac{45}{2\pi^4}\dfrac{g}{g_\star}\sqrt{\dfrac{\pi}{8}}x^{3/2}e^{-x}. \label{eq:Yeq_lat}
+\end{equation}
+
+Under this approximation, $Y_{eq}'\approx-Y_{eq}$
 \bibliographystyle{abbrv} 
 \bibliography{reviewdm.bib}
 

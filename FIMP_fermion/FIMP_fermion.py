@@ -40,7 +40,8 @@ class FIMP_fermion:
         if small_coupling:
             Omegah2 = 2.744*(self.M_fer/1)*(1000/self.M_bos)*(self.ys*1e10)**2
         else:
-            rdof = pd.read_csv('https://raw.githubusercontent.com/SantiagoJulioD/Trabajo_de_grado/refs/heads/main/FIMP_fermion/rdof.csv')
+            rdof = pd.read_csv('/home/santiago/Trabajo_de_grado/FIMP_fermion/rdof.csv')
+            #rdof = pd.read_csv('https://raw.githubusercontent.com/SantiagoJulioD/Trabajo_de_grado/refs/heads/main/FIMP_fermion/rdof.csv')
             gstar_s = interp1d(rdof['Temp'][::-1],rdof['g_s'][::-1],bounds_error=False,fill_value=(rdof['g_s'].values[-1],rdof['g_s'].values[0]))
             gstar_rho = interp1d(rdof['Temp'][::-1],rdof['g_rho'][::-1],bounds_error=False,fill_value=(rdof['g_rho'].values[-1],rdof['g_rho'].values[0]))
             alpha = self.ys**2*(1-4*self.M_fer**2/self.M_bos**2)**1.5+self.yp**2*(1-4*self.M_fer**2/self.M_bos**2)**0.5
@@ -84,19 +85,14 @@ class FIMP_fermion:
         else:
             return {'Omegah2_ODE':Omegah2}
         
-    def plot_omega(self,small_coupling,micromegas,colors):
-        low_m = float(input('Lower limit for log(M_fer):'))
-        up_m = float(input('Upper limit for log(M_fer):'))
-        N_m = int(input('Number of masses:'))
+    def plot_omega(self,small_coupling,micromegas,low_m,up_m,N_m,low_y,up_y,N_y,colors):
+
         masses = np.logspace(low_m,up_m,N_m)
 
-        low_y = float(input('Lower limit for log(y_s,p):'))
-        up_y = float(input('Upper limit for log(y_s,p):'))
-        N_y = int(input('Number of couplings:'))
         ys = np.logspace(low_y,up_y,N_y)
 
         self.M_fer = masses
-        print(ys)
+        # print(ys)
         for i,y in enumerate(ys):
             self.ys = y
             self.yp = y
@@ -113,6 +109,33 @@ class FIMP_fermion:
         plt.ylim(1e-4,1e3)
         plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
         plt.show()
+
+    def plot_y(self,low_mp,up_mp,N_mp,low_ms,up_ms,N_ms,colors):
+        Mps = np.logspace(low_mp,up_mp,N_mp)
+        MSs = np.logspace(low_ms,up_ms,N_ms)
+
+        self.M_fer = Mps
+
+        rdof = pd.read_csv('/home/santiago/Trabajo_de_grado/FIMP_fermion/rdof.csv')
+        #rdof = pd.read_csv('https://raw.githubusercontent.com/SantiagoJulioD/Trabajo_de_grado/refs/heads/main/FIMP_fermion/rdof.csv')
+        gstar_s = interp1d(rdof['Temp'][::-1],rdof['g_s'][::-1],bounds_error=False,fill_value=(rdof['g_s'].values[-1],rdof['g_s'].values[0]))
+        gstar_rho = interp1d(rdof['Temp'][::-1],rdof['g_rho'][::-1],bounds_error=False,fill_value=(rdof['g_rho'].values[-1],rdof['g_rho'].values[0]))
+        for i,M in enumerate(MSs):
+            self.M_bos = M
+            integrand = lambda x: kn(1,x)*x**3/((gstar_rho(self.M_bos/x))**0.5*gstar_s(self.M_bos/x))
+            I = quad(integrand,self.M_bos*1e-12,np.inf)[0]
+            const = gS*45*MP/((np.pi**2/90)**0.5*16*np.pi**5*self.M_bos)  
+            yss = (self.obs_omega/(2.744e8*Mps*self.M_bos**3*(1-4*Mps**2/self.M_bos**2)**1.5*gS*const*I))**0.5
+            yps = (self.obs_omega/(2.744e8*Mps*self.M_bos**3*(1-4*Mps**2/self.M_bos**2)**0.5*gS*const*I))**0.5
+            plt.loglog(Mps,yss,color=colors[i])
+            plt.loglog(Mps,yps,color=colors[i],linestyle=(0,(5,5)))
+        plt.grid()
+        plt.xlabel(r'$M_\psi$')
+        plt.ylabel(r'$y_{p,s}$')
+        #plt.ylim(1e-4,1e3)
+        #plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
+        plt.show()
+
                      
 
 # subprocess.getoutput("./main data.dat > output.dat")

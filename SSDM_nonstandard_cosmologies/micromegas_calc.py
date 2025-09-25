@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from numpy import *
 #from scipy.integrate  import quad
 import cmath
+import pandas as pd
 
 import subprocess
 import sys
@@ -61,9 +62,20 @@ fig, ax = plt.subplots(figsize=(8,6))
 CS = ax.contourf(np.log10(MM),np.log10(LL),np.log10(OO),cmap='inferno',)
 CSl = ax.contour(CS,levels=[np.log10(0.12),],colors='red',linestyles='solid',linewidths=2)
 #ax.vlines(np.log10(m_h/2),-13,-10)
+
 cbar = fig.colorbar(CS)
 cbar.add_lines(CSl)
+# p = CSl.collections[0].get_paths()[0]
+# v = p.vertices
+# x = v[:,0]
+# y = v[:,1]
+# params = pd.DataFrame()
+# params['M'] = x
+# params['lambda'] = y
+# params.to_csv('params_micromegas.csv')
+
 plt.show()
+
 
 
 
